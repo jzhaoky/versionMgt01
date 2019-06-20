@@ -68,7 +68,7 @@ $(function() {
       	        success: function (result, textStatus, jqXHR) {
       	        	var resobj = null;
     	        	try {
-    	        		//alert(result);
+    	        		alert(result);
     	        	   resobj = eval("(" + result + ")");
       	        	 if(resobj.length>0){
       	        		$("#suggest").html("");
