@@ -2,12 +2,12 @@ package com.wondersgroup.fwy.service.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
@@ -16,7 +16,7 @@ import org.apache.solr.client.solrj.response.SpellCheckResponse;
 import org.apache.solr.client.solrj.response.SpellCheckResponse.Suggestion;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,15 +36,18 @@ public class ProductManageServiceImpl implements IProductManageService{
 
 	//@Value("${solr.base_url}")
 	private String solr_base_url = "http://localhost:8088/solr/";
+	@Autowired
+	private SolrClient solrClient;
 	
 	@Override
 	public Page queryProductsByPage(ProductManageCondition condition) throws SolrServerException, IOException {
-		HttpSolrClient solrClient = new HttpSolrClient.Builder(solr_base_url) //创建solr连接客户端
+		/*SolrClient solrClient = new HttpSolrClient.Builder(solr_base_url) //创建solr连接客户端
 		.withConnectionTimeout(10000)
-		.withSocketTimeout(50000).build();
+		.withSocketTimeout(50000).build();*/
 		//搜索起始位置
 		SolrQuery solrQuery = packQuery(condition);
 		QueryResponse queryResponse = solrClient.query("product",solrQuery);
+		
 		Map<String, Map<String, List<String>>> hlResponse = queryResponse.getHighlighting(); //是否有高亮
 		SolrDocumentList docsList = queryResponse.getResults();
 		
@@ -65,9 +68,9 @@ public class ProductManageServiceImpl implements IProductManageService{
 	}
 	
 	public List<String> querySuggestWordList(String keywords) throws SolrServerException, IOException{
-		HttpSolrClient solrClient = new HttpSolrClient.Builder(solr_base_url) //创建solr连接客户端
+		/*HttpSolrClient solrClient = new HttpSolrClient.Builder(solr_base_url) //创建solr连接客户端
 		.withConnectionTimeout(10000)
-		.withSocketTimeout(50000).build();
+		.withSocketTimeout(50000).build();*/
 		List<String> dataList = new LinkedList<String>();
 		 SolrQuery query = new SolrQuery();
 		 query.set("qt", "/spell");
