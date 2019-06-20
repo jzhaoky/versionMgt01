@@ -8,6 +8,7 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrInputDocument;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,15 +52,14 @@ public class SolrJManager {
 		/*SolrInputDocument doc = new SolrInputDocument();  //创建document
 		doc.addField("id", "1");  //创建域
 		doc.addField("name", "华为");
-		solrClient.add("product",doc);*/ //向指定collection里面添加doc
-		
+		solrClient.add("product",doc); *///向指定collection里面添加doc
 		//封装成bean对象添加
-		ProductCore productCore = new ProductCore("1","华为");
-		ProductCore productCore1 = new ProductCore("2","中兴");
+		/*ProductCore productCore = new ProductCore("1","华为");
+		ProductCore productCore1 = new ProductCore("2","中兴");*/
 		ProductCore productCore2 = new ProductCore("3","阿里");
 		List<ProductCore> productCores = new ArrayList<ProductCore>();
-		productCores.add(productCore);
-		productCores.add(productCore1);
+		/*productCores.add(productCore);
+		productCores.add(productCore1);*/
 		productCores.add(productCore2);
 		solrClient.addBeans("product",productCores);
 		
@@ -77,7 +77,15 @@ public class SolrJManager {
 	@Test
 	public void testQuery() throws SolrServerException, IOException {
 		SolrQuery query = new SolrQuery();
-		query.setQuery("name:阿里真是中华有为啊！");
+		query.setQuery("name:*");
+		query.setStart(0);
+		query.setRows(3);
+		query.set("sort", "name asc");
+		query.setFields("name");
+		//query.set("", val)
+		//SolrQuery.SortClause
+		//query.setSort();
+		//query.setSort(field, order)
 		QueryResponse queryResponse = solrClient.query("product",query);
 		
 		//普通获取
@@ -103,7 +111,7 @@ public class SolrJManager {
 	@Test
 	public void testDelete() throws SolrServerException, IOException {
 		//solrClient.deleteById(id); 通过id删除
-		solrClient.deleteByQuery("product","id:[1 TO 2]"); //通过条件删除
+		solrClient.deleteByQuery("product","name:小明"); //通过条件删除
 		solrClient.commit("product");
 	}
 }
